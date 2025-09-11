@@ -22,6 +22,7 @@ namespace Phonebook.JJHH17
         {
             AddEntry,
             Read,
+            Delete,
             Exit,
         }
 
@@ -48,6 +49,13 @@ namespace Phonebook.JJHH17
                     case MenuOptions.Read:
                         Console.Clear();
                         ReadEntries();
+                        AnsiConsole.MarkupLine("[bold green]Press any key to continue...[/]");
+                        Console.ReadKey();
+                        break;
+
+                    case MenuOptions.Delete:
+                        Console.Clear();
+                        DeleteEntry();
                         break;
 
                     case MenuOptions.Exit:
@@ -111,8 +119,35 @@ namespace Phonebook.JJHH17
 
                     AnsiConsole.Write(table);
                 }
+            }
+        }
 
-                AnsiConsole.MarkupLine("[bold green]Press any key to continue...[/]");
+        public static void DeleteEntry()
+        {
+            using (var context = new PhoneBookContext())
+            {
+                AnsiConsole.MarkupLine("[blue]Delete an entry[/]");
+                ReadEntries();
+                Console.WriteLine("Enter the ID of the entry to delete:");
+                if (int.TryParse(Console.ReadLine(), out int id))
+                {
+                    var entry = context.PhoneBooks.Find(id);
+                    if (entry != null)
+                    {
+                        context.PhoneBooks.Remove(entry);
+                        context.SaveChanges();
+                        Console.WriteLine("Entry deleted successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Entry not found.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid ID format.");
+                }
+                Console.WriteLine("Press any key to continue...");
                 Console.ReadKey();
             }
         }
