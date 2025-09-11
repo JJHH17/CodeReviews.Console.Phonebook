@@ -4,23 +4,58 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
+using Spectre.Console.Cli;
+using Spectre.Console;
 
 // Entity Framework installed, both framework and SQL Server EF Packages
 // SQL Server used
 // app.config file used for SQL credentials
+// Spectre console is used for the menu and console
 // User will need to create the migrations folder and run the database update command 
 
 namespace Phonebook.JJHH17
 {
     public class Program
     {
+
+        enum MenuOptions
+        {
+            AddEntry,
+            Exit,
+        }
+
         public static async Task Main(string[] args)
         {
+            bool running = true;
+            while (running)
+            {
+                AnsiConsole.MarkupLine("[bold blue]Welcome to the Phonebook Application![/]");
+                Console.Clear();
 
+                var choice = AnsiConsole.Prompt(
+                    new SelectionPrompt<MenuOptions>()
+                        .Title("Select an option:")
+                        .AddChoices(Enum.GetValues<MenuOptions>()));
+
+                switch (choice)
+                {
+                    case MenuOptions.AddEntry:
+                        Console.Clear();
+                        Console.WriteLine("Feature coming soon...");
+                        Console.ReadKey();
+                        break;
+                    case MenuOptions.Exit:
+                        Console.Clear();
+                        running = false;
+                        AnsiConsole.MarkupLine("[bold green]Thank you for using the Phonebook Application![/]");
+                        AnsiConsole.MarkupLine("[bold green]Enter any key to quit![/]");
+                        Console.ReadKey();
+                        break;
+                }
+            }
         }
-    }
 
-    public static void AddEntry()
+        public static void AddEntry()
         {
             Console.WriteLine("Enter Name:");
             string name = Console.ReadLine();
@@ -37,13 +72,14 @@ namespace Phonebook.JJHH17
                     Email = email,
                     PhoneNumber = phoneNumber,
                 };
-                context.PhoneBooks.Add(newEntry);   
+                context.PhoneBooks.Add(newEntry);
                 context.SaveChanges();
             }
 
             Console.WriteLine("Entry added successfully. Enter any key to continue...");
             Console.ReadKey();
         }
+    }
 
     public class PhoneBook
     {
