@@ -21,6 +21,7 @@ namespace Phonebook.JJHH17
         enum MenuOptions
         {
             AddEntry,
+            Read,
             Exit,
         }
 
@@ -44,11 +45,15 @@ namespace Phonebook.JJHH17
                         AddEntry();
                         break;
 
+                    case MenuOptions.Read:
+                        Console.Clear();
+                        ReadEntries();
+                        break;
+
                     case MenuOptions.Exit:
                         Console.Clear();
                         running = false;
                         AnsiConsole.MarkupLine("[bold green]Thank you for using the Phonebook Application![/]");
-                        AnsiConsole.MarkupLine("[bold green]Enter any key to quit![/]");
                         Console.ReadKey();
                         break;
                 }
@@ -78,6 +83,38 @@ namespace Phonebook.JJHH17
 
             Console.WriteLine("Entry added successfully. Enter any key to continue...");
             Console.ReadKey();
+        }
+
+        public static void ReadEntries()
+        {
+            using (var context = new PhoneBookContext())
+            {
+                var query = context.PhoneBooks.ToList();
+
+                if (query.Count == 0)
+                {
+                    Console.WriteLine("No entries found.");
+                }
+                else
+                {
+                    Console.WriteLine("Phonebook Entries:");
+                    var table = new Table();
+                    table.AddColumn("ID");
+                    table.AddColumn("Name");
+                    table.AddColumn("Email");
+                    table.AddColumn("Phone Number");
+
+                    foreach (var entry in query)
+                    {
+                        table.AddRow(entry.Id.ToString(), entry.Name, entry.Email, entry.PhoneNumber);
+                    }
+
+                    AnsiConsole.Write(table);
+                }
+
+                AnsiConsole.MarkupLine("[bold green]Press any key to continue...[/]");
+                Console.ReadKey();
+            }
         }
     }
 
