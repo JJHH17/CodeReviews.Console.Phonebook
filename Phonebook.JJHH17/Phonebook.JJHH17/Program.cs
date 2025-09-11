@@ -16,26 +16,34 @@ namespace Phonebook.JJHH17
     {
         public static async Task Main(string[] args)
         {
-            using (var context = new PhoneBookContext())
-            {
-                context.Database.EnsureCreated();
-
-                var newEntry = new PhoneBook
-                {
-                    Name = "Jane Doe",
-                    Email = "Jane.Doe@email.org",
-                    PhoneNumber = "123-456-7890",
-                };
-                context.PhoneBooks.Add(newEntry);
-                context.SaveChanges();
-
-            }
-
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
 
         }
     }
+
+    public static void AddEntry()
+        {
+            Console.WriteLine("Enter Name:");
+            string name = Console.ReadLine();
+            Console.WriteLine("Enter Email:");
+            string email = Console.ReadLine();
+            Console.WriteLine("Enter Phone Number:");
+            string phoneNumber = Console.ReadLine();
+
+            using (var context = new PhoneBookContext())
+            {
+                var newEntry = new PhoneBook
+                {
+                    Name = name,
+                    Email = email,
+                    PhoneNumber = phoneNumber,
+                };
+                context.PhoneBooks.Add(newEntry);   
+                context.SaveChanges();
+            }
+
+            Console.WriteLine("Entry added successfully. Enter any key to continue...");
+            Console.ReadKey();
+        }
 
     public class PhoneBook
     {
