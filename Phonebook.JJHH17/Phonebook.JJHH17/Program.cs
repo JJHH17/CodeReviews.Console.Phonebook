@@ -23,6 +23,7 @@ namespace Phonebook.JJHH17
             AddEntry,
             Read,
             Delete,
+            Update,
             Exit,
         }
 
@@ -56,6 +57,11 @@ namespace Phonebook.JJHH17
                     case MenuOptions.Delete:
                         Console.Clear();
                         DeleteEntry();
+                        break;
+
+                    case MenuOptions.Update:
+                        Console.Clear();
+                        UpdateEntry();
                         break;
 
                     case MenuOptions.Exit:
@@ -147,6 +153,47 @@ namespace Phonebook.JJHH17
                 {
                     Console.WriteLine("Invalid ID format.");
                 }
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+            }
+        }
+
+        // method for updating an existing entry
+        public static void UpdateEntry()
+        {
+            using (var context = new PhoneBookContext())
+            {
+                AnsiConsole.MarkupLine("[blue]Update an entry[/]");
+                ReadEntries();
+
+                Console.WriteLine("Enter the ID of the entry to update:");
+                if (int.TryParse(Console.ReadLine(), out int id))
+                {
+                    var entry = context.PhoneBooks.Find(id);
+                    if (entry != null)
+                    {
+                        Console.WriteLine("Enter new Name (leave blank to keep current):");
+                        string name = Console.ReadLine();
+                        Console.WriteLine("Enter new Email (leave blank to keep current):");
+                        string email = Console.ReadLine();
+                        Console.WriteLine("Enter new Phone Number (leave blank to keep current):");
+                        string phoneNumber = Console.ReadLine();
+                        if (!string.IsNullOrWhiteSpace(name)) entry.Name = name;
+                        if (!string.IsNullOrWhiteSpace(email)) entry.Email = email;
+                        if (!string.IsNullOrWhiteSpace(phoneNumber)) entry.PhoneNumber = phoneNumber;
+                        context.SaveChanges();
+                        Console.WriteLine("Entry updated successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Entry not found.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid ID format.");
+                }
+
                 Console.WriteLine("Press any key to continue...");
                 Console.ReadKey();
             }
