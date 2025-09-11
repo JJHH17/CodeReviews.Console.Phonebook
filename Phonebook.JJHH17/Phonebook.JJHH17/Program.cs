@@ -3,18 +3,37 @@ using Microsoft.IdentityModel.Protocols;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Threading.Tasks;
 
 // Entity Framework installed, both framework and SQL Server EF Packages
 // SQL Server used
 // app.config file used for SQL credentials
+// User will need to create the migrations folder and run the database update command 
 
 namespace Phonebook.JJHH17
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            Console.WriteLine("Howdy, all!");
+            using (var context = new PhoneBookContext())
+            {
+                context.Database.EnsureCreated();
+
+                var newEntry = new PhoneBook
+                {
+                    Name = "Jane Doe",
+                    Email = "Jane.Doe@email.org",
+                    PhoneNumber = "123-456-7890",
+                };
+                context.PhoneBooks.Add(newEntry);
+                context.SaveChanges();
+
+            }
+
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
+
         }
     }
 
@@ -36,7 +55,7 @@ namespace Phonebook.JJHH17
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Connection string to be added");
+            optionsBuilder.UseSqlServer(connectionString);
         }
     }
 }
