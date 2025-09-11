@@ -41,9 +41,9 @@ namespace Phonebook.JJHH17
                 {
                     case MenuOptions.AddEntry:
                         Console.Clear();
-                        Console.WriteLine("Feature coming soon...");
-                        Console.ReadKey();
+                        AddEntry();
                         break;
+
                     case MenuOptions.Exit:
                         Console.Clear();
                         running = false;
