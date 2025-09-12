@@ -81,7 +81,7 @@ namespace Phonebook.JJHH17
             Console.WriteLine("Enter Email:");
             string email = Console.ReadLine();
             Console.WriteLine("Enter Phone Number:");
-            string phoneNumber = Console.ReadLine();
+            string phoneNumber = EnterPhoneNumber();
 
             using (var context = new PhoneBookContext())
             {
@@ -177,7 +177,7 @@ namespace Phonebook.JJHH17
                         Console.WriteLine("Enter new Email (leave blank to keep current):");
                         string email = Console.ReadLine();
                         Console.WriteLine("Enter new Phone Number (leave blank to keep current):");
-                        string phoneNumber = Console.ReadLine();
+                        string phoneNumber = EnterPhoneNumber(); 
                         if (!string.IsNullOrWhiteSpace(name)) entry.Name = name;
                         if (!string.IsNullOrWhiteSpace(email)) entry.Email = email;
                         if (!string.IsNullOrWhiteSpace(phoneNumber)) entry.PhoneNumber = phoneNumber;
@@ -198,6 +198,38 @@ namespace Phonebook.JJHH17
                 Console.ReadKey();
             }
         }
+
+        private static bool IsDigit(string input)
+        {
+            foreach (char c in input)
+            {
+                if (c < '0' || c > '9')
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static bool IsPhoneNumber(string number)
+        {
+            // Please note that this specifically checks for UK phone numbers (they start with 07)
+            return number[0] == '0' && number[1] == '7' && number.Length == 11 && IsDigit(number);
+        }
+
+        private static string EnterPhoneNumber()
+        {
+            Console.WriteLine("Please enter a UK phone number");
+            Console.WriteLine("UK Phone numbers have an 07 prefix and are 11 digits long");
+            string phoneNumber = Console.ReadLine();
+            while (!IsPhoneNumber(phoneNumber))
+            {
+                Console.WriteLine("Invalid phone number format. Please enter a valid UK phone number:");
+                phoneNumber = Console.ReadLine();
+            }
+            return phoneNumber;
+
+        }
     }
 
     public class PhoneBook
@@ -206,6 +238,7 @@ namespace Phonebook.JJHH17
         public string Name { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+
     }
 
     public class PhoneBookContext : DbContext
