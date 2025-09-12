@@ -198,7 +198,15 @@ namespace Phonebook.JJHH17
         private static bool IsPhoneNumber(string number)
         {
             // Please note that this specifically checks for UK phone numbers (they start with 07)
-            return number[0] == '0' && number[1] == '7' && number.Length == 11 && IsDigit(number);
+            if (string.IsNullOrWhiteSpace(number)) return false;
+
+            number = number.Trim();
+
+            if (number.Length != 11) return false;
+
+            if (!number.StartsWith("07")) return false;
+
+            return IsDigit(number);
         }
 
         private static string EnterPhoneNumber()
