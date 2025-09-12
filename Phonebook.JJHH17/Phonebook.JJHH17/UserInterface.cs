@@ -69,6 +69,8 @@ namespace Phonebook.JJHH17
             string name = Console.ReadLine();
             string email = EnterEmail();
             string phoneNumber = EnterPhoneNumber();
+            Console.WriteLine("Enter Category (optional):");
+            string category = Console.ReadLine();
 
             using (var context = new PhoneBookContext())
             {
@@ -77,6 +79,7 @@ namespace Phonebook.JJHH17
                     Name = name,
                     Email = email,
                     PhoneNumber = phoneNumber,
+                    Category = category
                 };
                 context.PhoneBooks.Add(newEntry);
                 context.SaveChanges();
@@ -104,10 +107,11 @@ namespace Phonebook.JJHH17
                     table.AddColumn("Name");
                     table.AddColumn("Email");
                     table.AddColumn("Phone Number");
+                    table.AddColumn("Category");
 
                     foreach (var entry in query)
                     {
-                        table.AddRow(entry.Id.ToString(), entry.Name, entry.Email, entry.PhoneNumber);
+                        table.AddRow(entry.Id.ToString(), entry.Name, entry.Email, entry.PhoneNumber, entry.Category);
                     }
 
                     AnsiConsole.Write(table);
@@ -165,6 +169,8 @@ namespace Phonebook.JJHH17
                         if (!string.IsNullOrWhiteSpace(name)) entry.Name = name;
                         if (!string.IsNullOrWhiteSpace(email)) entry.Email = email;
                         if (!string.IsNullOrWhiteSpace(phoneNumber)) entry.PhoneNumber = phoneNumber;
+                        Console.WriteLine("Enter new Category (leave blank to keep current):");
+                        string category = Console.ReadLine();
                         context.SaveChanges();
                         Console.WriteLine("Entry updated successfully.");
                     }
