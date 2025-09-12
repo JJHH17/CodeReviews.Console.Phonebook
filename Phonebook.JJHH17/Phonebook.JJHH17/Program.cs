@@ -78,9 +78,7 @@ namespace Phonebook.JJHH17
         {
             Console.WriteLine("Enter Name:");
             string name = Console.ReadLine();
-            Console.WriteLine("Enter Email:");
-            string email = Console.ReadLine();
-            Console.WriteLine("Enter Phone Number:");
+            string email = EnterEmail();
             string phoneNumber = EnterPhoneNumber();
 
             using (var context = new PhoneBookContext())
@@ -158,7 +156,6 @@ namespace Phonebook.JJHH17
             }
         }
 
-        // method for updating an existing entry
         public static void UpdateEntry()
         {
             using (var context = new PhoneBookContext())
@@ -174,9 +171,7 @@ namespace Phonebook.JJHH17
                     {
                         Console.WriteLine("Enter new Name (leave blank to keep current):");
                         string name = Console.ReadLine();
-                        Console.WriteLine("Enter new Email (leave blank to keep current):");
-                        string email = Console.ReadLine();
-                        Console.WriteLine("Enter new Phone Number (leave blank to keep current):");
+                        string email = EnterEmail();
                         string phoneNumber = EnterPhoneNumber(); 
                         if (!string.IsNullOrWhiteSpace(name)) entry.Name = name;
                         if (!string.IsNullOrWhiteSpace(email)) entry.Email = email;
@@ -227,8 +222,28 @@ namespace Phonebook.JJHH17
                 Console.WriteLine("Invalid phone number format. Please enter a valid UK phone number:");
                 phoneNumber = Console.ReadLine();
             }
-            return phoneNumber;
 
+            return phoneNumber;
+        }
+
+        private static bool IsEmail(string email)
+        {
+            // Some email domains don't contain a dot (.), so I've left this out for now
+            return email.Length >= 4 && email.Contains("@");
+        }
+
+        private static string EnterEmail()
+        {
+            Console.WriteLine("Please enter an email address");
+            Console.WriteLine("A valid email address must contain atleast 4 characters and an @ symbol");
+            string email = Console.ReadLine();
+            while (!IsEmail(email))
+            {
+                Console.WriteLine("Invalid email format. Please enter a valid email address:");
+                email = Console.ReadLine();
+            }
+
+            return email;
         }
     }
 
