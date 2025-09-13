@@ -13,6 +13,7 @@ namespace Phonebook.JJHH17
             Read,
             Delete,
             Update,
+            SendEmail,
             Exit,
         }
 
@@ -51,6 +52,12 @@ namespace Phonebook.JJHH17
                     case MenuOptions.Update:
                         Console.Clear();
                         UpdateEntry();
+                        break;
+
+                    case MenuOptions.SendEmail:
+                        Console.Clear();
+                        AnsiConsole.MarkupLine("[bold blue]Compose and send an email[/]");
+                        SendEmail();
                         break;
 
                     case MenuOptions.Exit:
@@ -247,6 +254,39 @@ namespace Phonebook.JJHH17
             }
 
             return email;
+        }
+
+        private static void SendEmail()
+        {
+            ReadEntries();
+            Console.WriteLine("Enter an ID to send an email to that contact:");
+            if (int.TryParse(Console.ReadLine(), out int id))
+            {
+                using (var context = new PhoneBookContext())
+                {
+                    var entry = context.PhoneBooks.Find(id);
+                    if (entry != null)
+                    {
+                        Console.WriteLine($"Composing email to {entry.Name} at {entry.Email}");
+                        Console.WriteLine("Enter subject:");
+                        string subject = Console.ReadLine();
+                        Console.WriteLine("Enter email body:");
+                        string body = Console.ReadLine();
+                        string email = entry.Email;
+                        Email.SendEmail(email, subject, body);
+                        Console.WriteLine("Email process completed. Press any key to continue...");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Entry not found.");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid ID format.");
+            }
         }
     }
 }
