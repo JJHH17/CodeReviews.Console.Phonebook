@@ -14,6 +14,7 @@ namespace Phonebook.JJHH17
             Delete,
             Update,
             SendEmail,
+            SendSMS,
             Exit,
         }
 
@@ -58,6 +59,12 @@ namespace Phonebook.JJHH17
                         Console.Clear();
                         AnsiConsole.MarkupLine("[bold blue]Compose and send an email[/]");
                         SendEmail();
+                        break;
+
+                    case MenuOptions.SendSMS:
+                        Console.Clear();
+                        AnsiConsole.MarkupLine("[bold blue]Compose and send an SMS[/]");
+                        SendSMS();
                         break;
 
                     case MenuOptions.Exit:
@@ -286,6 +293,41 @@ namespace Phonebook.JJHH17
             else
             {
                 Console.WriteLine("Invalid ID format.");
+            }
+        }
+
+        private static void SendSMS()
+        {
+            ReadEntries();
+            Console.WriteLine("Enter an ID to send an SMS to that contact:");
+            if (int.TryParse(Console.ReadLine(), out int id))
+            {
+                using (var context = new PhoneBookContext())
+                {
+                    var entry = context.PhoneBooks.Find(id);
+                    if (entry != null)
+                    {
+                        Console.WriteLine($"Composing SMS to {entry.Name} at {entry.PhoneNumber}");
+                        Console.WriteLine("Enter SMS body:");
+                        string body = Console.ReadLine();
+                        string phoneNumber = entry.PhoneNumber;
+                        SMS.SendSms(phoneNumber, body);
+                        Console.WriteLine("SMS process completed. Press any key to continue...");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Entry not found.");
+                        Console.WriteLine("Press any key to continue...");
+                        Console.ReadKey();
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid ID format.");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
             }
         }
     }
